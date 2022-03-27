@@ -9,7 +9,6 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.BitSet;
 import java.util.Objects;
 
 import static java.lang.Math.pow;
@@ -36,8 +35,8 @@ public class frame extends JFrame {
 
         //iter_but необходим для запоминания над какой таблицей мы работаем в данный момент
         this.iter_but = i;
-        tables_temp = tables;
-        V_W_temp = indx_V_W;
+        tables_temp = tables.clone();
+        V_W_temp = indx_V_W.clone();
 
         //Функция для ручного заполнения таблицы и автоматического ввода значений в table_temp
         TextFilling();
@@ -66,6 +65,15 @@ public class frame extends JFrame {
                 field[i][j].setFont(font);
 
                 frame.add(field[i][j]); field[i][j].addKeyListener(listener);
+            }
+        }
+        double g[]; String str;
+        for (int i = 0; i< 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (i!=j && tables_temp[iter_but][i][j]!=1){
+                    //g = tables_temp[iter_but][j][i];
+                    field[i][j].setText(String.valueOf(String.valueOf(tables_temp[iter_but][i][j]).charAt(0)));
+                }
             }
         }
 
@@ -164,18 +172,6 @@ public class frame extends JFrame {
             }
             //При заполнении или изменении значений на главной диагонали - меняем их значение на "1"
             else {field[i][j].setText("1"); tables_temp[iter_but][i][j] = 1; }
-/*
-            //Расчитываем относительную ценность и важности приоритетов
-            double temp_num = 0;
-            for(int k=0; k<5; k++){
-                if (k!=0) V_W_temp[iter_but][i][0] *= tables_temp[iter_but][i][k];
-                else V_W_temp[iter_but][i][0] = tables_temp[iter_but][i][k];
-            }
-            V_W_temp[iter_but][i][0] = Math.pow(V_W_temp[iter_but][i][0], 1/5);
-            for (int l = 0; l<5; l++)temp_num += V_W_temp[iter_but][l][0];
-            V_W_temp[iter_but][5][0] = temp_num;
-            V_W_temp[iter_but][i][1] = V_W_temp[iter_but][i][0]/temp_num;
-*/
 
         }
 
