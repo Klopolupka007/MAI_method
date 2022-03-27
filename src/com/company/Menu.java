@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -29,7 +30,23 @@ public class Menu extends  JFrame{
         double [][][] tables = new double[6][5][5];
 
         //таблица indx_V_W хранит расчетные данные
-        double [][][] indx_V_W = new double[6][6][5];
+        double [][][] indx_V_W = new double[6][6][2];
+
+        for (int i =0; i<6; i++){
+            for (int j = 0; j<6;j++){
+                for (int k =0; k<2; k++){
+                    indx_V_W[i][j][k] = 1;
+                }
+            }
+        }
+
+         for (int i =0; i<6; i++){
+             for (int j = 0; j<5;j++){
+                 for (int k =0; k<5; k++){
+                     tables[i][j][k] = 1;
+                 }
+             }
+         }
 
         for (int i =0; i<9;i++){
             j=i;
@@ -41,6 +58,7 @@ public class Menu extends  JFrame{
             else button[i].setBackground(new Color(81, 217, 120));
 
             button[i].setVisible(true); button[i].setBorder(null);
+
             //Listener для кнопок
             Main_frame.add(button[i]); button[i].addActionListener(new ActionListener() {
                 @Override

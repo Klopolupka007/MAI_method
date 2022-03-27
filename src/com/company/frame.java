@@ -6,28 +6,36 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Objects;
 
+import static java.lang.Math.pow;
+
 public class frame extends JFrame {
     private JFrame frame;
     int iter_but;
 
     //tables_temp необходим для хранения значений таблицы. Первый индекс - номер таблицы от 0 до 5. Второй и третий - значения таблицы
+    //V_W_temp - таблица для результатов расчетов
     double [][][] tables_temp = new double[5][5][5];
+    double [][][] V_W_temp = new double[6][6][2];
+
+    JLabel VW[][] = new JLabel[2][6];
 
     //Создаем окно для работы с таблицами
     public frame(double [][][] tables, int i, double[][][] indx_V_W, String name){
         frame = new JFrame(name);
-        frame.setSize(790, 645);
+        frame.setSize(825, 645);
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        frame.setLayout(null);
+        frame.setLayout(null); frame.getContentPane().setBackground(Color.gray);
 
         //iter_but необходим для запоминания над какой таблицей мы работаем в данный момент
         this.iter_but = i;
         tables_temp = tables;
+        V_W_temp = indx_V_W;
 
         //Функция для ручного заполнения таблицы и автоматического ввода значений в table_temp
         TextFilling();
+
     }
 
     private JTextField[][] field;
@@ -71,6 +79,30 @@ public class frame extends JFrame {
                     frame.add(lab[i][j]);
                 }
         }
+
+        //Блоки label для показателя расчетов
+
+        for (int x=0; x<2; x++){
+            for (int y =0; y<6; y++){
+                if (x==1 && y == 5) continue;
+                    VW[x][y] = new JLabel();
+                    VW[x][y].setBounds(100*(x+6)+5, 100*y+5, 95, 95);
+                    VW[x][y].setFont(new Font("Times new Roman", Font.BOLD, 25));
+                    VW[x][y].setOpaque(true);
+                    VW[x][y].setBackground(new Color(220, 220, 220));
+                    VW[x][y].setHorizontalAlignment(JLabel.CENTER);
+
+                    frame.add(VW[x][y]);
+            }
+        } VW[0][0].setText("V(i)"); VW[1][0].setText("W(2i)");
+
+        //Кнопка для начала расчетов
+        JButton Start = new JButton("Start");
+        Start.setBounds(705, 505, 95, 95);
+        Start.setBackground(new Color(81, 217, 120));
+        Start.setBorder(null); Start.setFont(new Font("Times new Roman", Font.BOLD, 35));
+
+        frame.add(Start);
     }
 
     //listener для обработки ввода чисел в поля ввода
@@ -105,6 +137,19 @@ public class frame extends JFrame {
             }
             //При заполнении или изменении значений на главной диагонали - меняем их значение на "1"
             else {field[i][j].setText("1"); tables_temp[iter_but][i][j] = 1; }
+
+            //Расчитываем относительную ценность и важности приоритетов
+            double temp_num = 0;
+            for(int k=0; k<5; k++){
+                if (k!=0) V_W_temp[iter_but][i][0] *= tables_temp[iter_but][i][k];
+                else V_W_temp[iter_but][i][0] = tables_temp[iter_but][i][k];
+            }
+            V_W_temp[iter_but][i][0] = Math.pow(V_W_temp[iter_but][i][0], 1/5);
+            for (int l = 0; l<5; l++)temp_num += V_W_temp[iter_but][l][0];
+            V_W_temp[iter_but][5][0] = temp_num;
+            V_W_temp[iter_but][i][1] = V_W_temp[iter_but][i][0]/temp_num;
+
+
         }
 
         //Функция, конвертирующая введенные значения таблицы из String в double, при этом также обрабатывается симметричные поля
