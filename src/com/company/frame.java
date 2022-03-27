@@ -14,8 +14,6 @@ public class frame extends JFrame {
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
-        graphs fields = new graphs();
-        frame.add(fields, null);
         TextFilling();
     }
     private JTextField[][] field;
@@ -30,6 +28,18 @@ public class frame extends JFrame {
                 field[i][j].setHorizontalAlignment(JTextField.CENTER); field[i][j].setFont(font);
                 frame.add(field[i][j]); field[i][j].addKeyListener(listener);
             }
+        }
+        JLabel lab[][] = new JLabel[2][5];
+        for (int i=0; i<2;i++){
+                for (int j=0; j<5;j++) {
+                    lab[i][j] = new JLabel(Integer.toString(j+1));
+                    if (i==0) lab[i][j].setBounds(100 * (j+1) + 5, 5, 95, 95);
+                    else lab[i][j].setBounds(5, 100 * (j+1) + 5, 95, 95);
+                    lab[i][j].setOpaque(true);
+                    lab[i][j].setBackground(new Color(204, 204, 204));
+                    lab[i][j].setFont(font); lab[i][j].setHorizontalAlignment(JLabel.CENTER);
+                    frame.add(lab[i][j]);
+                }
         }
     }
     class textChangedListener implements KeyListener
@@ -66,23 +76,4 @@ public class frame extends JFrame {
         }
         public void keyReleased(KeyEvent e){ } public void keyTyped(KeyEvent e){ }
     }
-}
-
-class graphs extends JPanel{
-        protected void paintComponent(Graphics g) {
-            Font font = new Font("Times new Roman", Font.BOLD ,30);
-            g.setFont(font);
-            for (int i=0; i<6;i++) {
-                g.setColor(new Color(204,204,204));
-               // g.setColor(new Color(170, 204, 67));
-                g.fillRect(100*i+5, 5, 95, 95);
-                g.fillRect(5, 100*i+5, 95, 95);
-                g.fillRect(605,5, 272,594);
-                g.setColor(Color.DARK_GRAY);
-                if (i!=0) {
-                    g.drawString(Integer.toString(i), i * 100 + 45, 60);
-                    g.drawString(Integer.toString(i), 40, i * 100 + 60);
-                }
-            }
-        }
 }
