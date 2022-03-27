@@ -4,63 +4,126 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Objects;
 
 public class frame extends JFrame {
     private JFrame frame;
-    public frame(double [][][] tables){
-        frame = new JFrame("Table");
-        frame.setSize(900, 645);
+    int iter_but;
+
+    //tables_temp необходим для хранения значений таблицы. Первый индекс - номер таблицы от 0 до 5. Второй и третий - значения таблицы
+    double [][][] tables_temp = new double[5][5][5];
+
+    //Создаем окно для работы с таблицами
+    public frame(double [][][] tables, int i, double[][][] indx_V_W, String name){
+        frame = new JFrame(name);
+        frame.setSize(790, 645);
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setLayout(null);
+
+        //iter_but необходим для запоминания над какой таблицей мы работаем в данный момент
+        this.iter_but = i;
+        tables_temp = tables;
+
+        //Функция для ручного заполнения таблицы и автоматического ввода значений в table_temp
         TextFilling();
     }
+
     private JTextField[][] field;
+
+    //Функция для ручного заполнения таблицы и автоматического ввода значений в table_temp
     private void TextFilling(){
+        //Создаем поля для ввода значений
         field = new JTextField[5][5]; Font font = new Font("Times new Roman", Font.BOLD ,30);
+
+        //Добавляем listener для обработки ввода в поля
         textChangedListener listener = new textChangedListener();
+
+        //Настройка полей для ввода + автоматическое заполнение главной диагонали матрицы единицами
         for (int i = 0; i< 5; i++) {
             for (int j=0; j<5; j++) {
                 field[i][j] = new JTextField();
                 field[i][j].setBounds(100*(j+1)+5, 100*(i+1)+5, 95,95);
-                if (i==j) field[i][j].setText("1");
-                field[i][j].setHorizontalAlignment(JTextField.CENTER); field[i][j].setFont(font);
+
+                if (i==j) {field[i][j].setText("1");tables_temp[iter_but][i][j] = 1; }
+
+                field[i][j].setHorizontalAlignment(JTextField.CENTER);
+                field[i][j].setFont(font);
+
                 frame.add(field[i][j]); field[i][j].addKeyListener(listener);
             }
         }
+
+        //Для обозначения номеров полей сверху и слева создаем надписи по порядку с 1 по 5
         JLabel lab[][] = new JLabel[2][5];
         for (int i=0; i<2;i++){
                 for (int j=0; j<5;j++) {
                     lab[i][j] = new JLabel(Integer.toString(j+1));
+
                     if (i==0) lab[i][j].setBounds(100 * (j+1) + 5, 5, 95, 95);
                     else lab[i][j].setBounds(5, 100 * (j+1) + 5, 95, 95);
+
                     lab[i][j].setOpaque(true);
                     lab[i][j].setBackground(new Color(204, 204, 204));
                     lab[i][j].setFont(font); lab[i][j].setHorizontalAlignment(JLabel.CENTER);
+
                     frame.add(lab[i][j]);
                 }
         }
     }
+
+    //listener для обработки ввода чисел в поля ввода
     class textChangedListener implements KeyListener
     {
+        //При нажатии любой управляющей клавиши после ввода будет запущен обработчик
         public void keyPressed(KeyEvent e){
             String num;
             int i =0, j=0, flag=0;
+
+            //Вычисляем какое поле было изменено
             JTextField text = (JTextField)e.getSource();
+
             for (i=0; i<5; i++){
                 for (j =0; j<5; j++) {
                     if (text == field[i][j]) {
                         flag = 1;
                         break;
                     }
+
+                    //При заполнении или изменении значений на главной диагонали - меняем их значение на "1"
                     if(j==i && !field[i][j].getText().equals("1")) field[i][j].setText("1");
                 }
                 if (flag==1) break;
             }
-            if(i!=j) {num = field[i][j].getText(); field[j][i].setText(fromStr(num));}
-            else field[i][j].setText("1");
+
+            //При заполнении одного поля, заполняется симметричное текущему и данные значения затем конвертируются в числа и вбиваются в таблицу значений
+            if(i!=j) {
+                num = field[i][j].getText(); field[j][i].setText(fromStr(num));
+                tables_temp[iter_but][i][j] = toDigit(field[i][j].getText());
+                tables_temp[iter_but][j][i] = toDigit(field[j][i].getText());
+            }
+            //При заполнении или изменении значений на главной диагонали - меняем их значение на "1"
+            else {field[i][j].setText("1"); tables_temp[iter_but][i][j] = 1; }
         }
+
+        //Функция, конвертирующая введенные значения таблицы из String в double, при этом также обрабатывается симметричные поля
+        //Например: (String) "2" && "1/2" -> (Double) 2 && 0.5
+        private double toDigit(String num){if (!Objects.equals(num, "")) {
+            double res = 0;
+            StringBuilder temp = new StringBuilder();
+            if (num.length()<2){
+                res = Integer.parseInt(num);
+            }
+            else if (num.charAt(1) == '/') {
+                for (int i = 2; i < num.length(); i++) temp.append(num.charAt(i));
+                res = 1 / (Double.parseDouble(temp.toString()));
+            } return res;
+        } return 0;
+        }
+
+        //Функция, определяющая введенное значение и возвращающее симметричное значение матрицы: "2" -> "1/2", "1/2" -> "2"
+        //При вводе "1/1" или "1" автоматически присваивает значение "1" для текущего и симметричного поля
         public String fromStr(String num){
             String temp = " ", res_str = " ";
             for(int i=0; i<num.length(); i++){
