@@ -17,6 +17,7 @@ public class frame extends JFrame {
     private JFrame frame;
     int iter_but;
 
+
     //tables_temp необходим для хранения значений таблицы. Первый индекс - номер таблицы от 0 до 5. Второй и третий - значения таблицы
     //V_W_temp - таблица для результатов расчетов
     double [][][] tables_temp = new double[5][5][5];
@@ -31,7 +32,7 @@ public class frame extends JFrame {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        frame.setLayout(null); frame.getContentPane().setBackground(Color.gray);
+        frame.setLayout(null); frame.getContentPane().setBackground(new Color(40,40,40));
 
         //iter_but необходим для запоминания над какой таблицей мы работаем в данный момент
         this.iter_but = i;
@@ -58,6 +59,7 @@ public class frame extends JFrame {
         for (int i = 0; i< 5; i++) {
             for (int j = 0; j < 5; j++) {
                 field[i][j] = new JTextField();
+                field[i][j].setBackground(new Color (252, 175, 175));
                 field[i][j].setBounds(100 * (j + 1) + 5, 100 * (i + 1) + 5, 95, 95);
 
                 if (i == j) {
@@ -105,7 +107,7 @@ public class frame extends JFrame {
                     else lab[i][j].setBounds(5, 100 * (j+1) + 5, 95, 95);
 
                     lab[i][j].setOpaque(true);
-                    lab[i][j].setBackground(new Color(204, 204, 204));
+                    lab[i][j].setBackground(new Color(219, 96, 96));
                     lab[i][j].setFont(font); lab[i][j].setHorizontalAlignment(JLabel.CENTER);
 
                     frame.add(lab[i][j]);
@@ -120,7 +122,7 @@ public class frame extends JFrame {
                     VW[x][y].setBounds(100*(x+6)+5, 100*y+5, 95, 95);
                     VW[x][y].setFont(new Font("Times new Roman", Font.BOLD, 25));
                     VW[x][y].setOpaque(true);
-                    VW[x][y].setBackground(new Color(220, 220, 220));
+                    VW[x][y].setBackground(new Color(252, 149, 149));
                     VW[x][y].setHorizontalAlignment(JLabel.CENTER);
 
                     frame.add(VW[x][y]);

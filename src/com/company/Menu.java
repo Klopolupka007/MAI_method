@@ -28,8 +28,9 @@ public class Menu extends  JFrame{
         Main_frame.setResizable(false);
         Main_frame.setLocationRelativeTo(null);
         Main_frame.setLayout(null);
+        Main_frame.getContentPane().setBackground(new Color(40,40,40));
 
-        button = new JButton[9];
+         button = new JButton[9];
         double [][][] tables = new double[6][5][5];
 
         //таблица indx_V_W хранит расчетные данные
@@ -69,7 +70,7 @@ public class Menu extends  JFrame{
             Main_frame.add(button[i]); button[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame table;
+                    frame table; Computing computing;
                     String temp_str_auto = "";
                     for (int j=0; j<9; j++) {
                         if (button[j] == e.getSource()) {
@@ -117,7 +118,7 @@ public class Menu extends  JFrame{
                             }
                             //Окно с расчетами для отчета или истории вычислений
                             else if (j == 7){
-
+                                computing = new Computing(indx_V_W, resArr, tables);
                             }
                             //Окно с диаграммой
                         }
