@@ -20,7 +20,7 @@ public class Computing extends JFrame {
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setBackground(new Color(40,40,40));
 
-        JTextArea Text = new JTextArea("Расчеты.");
+        JTextArea Text = new JTextArea("Расчеты.\n");
         Text.setFont(new Font( "Times new Roman", Font.PLAIN, 16));
         Text.setBounds(10, 10, 465, 843);
         //Text.setEditable(false);
@@ -37,9 +37,10 @@ public class Computing extends JFrame {
 
         MathContext context = new MathContext(3, RoundingMode.HALF_UP);
         //Записываем расчеты для V, W, СЗ, ИС и ОС в TextArea
-        //Для V(i)
-        StringBuilder calculatings;
+        //Для V и W
+        StringBuilder calculations = new StringBuilder("");
         for (int i=0; i<6; i++){
+            //Для V(i)
             for (int j =0; j<5;j++) {
                 Text.append("\nV(К"); Text.append(String.valueOf(i+1)); Text.append(String.valueOf(j+1)); Text.append(") = (");
                 for (int k =0; k<5; k++){
@@ -47,28 +48,36 @@ public class Computing extends JFrame {
                     if (k!=4) Text.append(" x ");
                     else Text.append(")^1/5 = ");
                 }
+                calculations.append(String.valueOf(new BigDecimal(W[i][j][0], context)));
+                if (j == 4) calculations.append(" = "); else calculations.append(" + ");
                 Text.append(String.valueOf(new BigDecimal(W[i][j][0], context)));
             }
-            Text.append("\nСумма V(К"); Text.append(String.valueOf(i+1)); Text.append("Y) = ");
-        }
-        //Для W(i)
-        //for (int i=0; i<6; i++)
-
-
-
-
+            calculations.append(String.valueOf(new BigDecimal(W[i][5][0], context)));
+            Text.append("\nСумма V(К"); Text.append(String.valueOf(i+1));
+            Text.append("Y) = ");
+            Text.append(String.valueOf(calculations));
+            Text.append("\n");
+            calculations = new StringBuilder("");
+            //Для W(i)
+            for (int j =0; j<5; j++){
+                Text.append("W(3К"); Text.append(String.valueOf(i+1)); Text.append(String.valueOf(j+1));
+                Text.append(") = "); Text.append(String.valueOf(new BigDecimal(W[i][j][0], context))); Text.append("/");
+                Text.append(String.valueOf(new BigDecimal(W[i][5][0], context))); Text.append(" = ");
+                Text.append(String.valueOf(new BigDecimal(W[i][j][1], context))); Text.append("\n");
+            }
+        } Text.append("\n");
 
         //Делаем главные расчеты и записываем их в TextArea
 
 
         for (int i =0; i<6; i++){
-            calculatings = new StringBuilder(" = ");
+            calculations = new StringBuilder(" = ");
             for (int j=1; j<6; j++){
                 result[i] += W[0][j-1][1]*W[j][i][1];
-                calculatings.append(String.valueOf(new BigDecimal(W[0][j - 1][1], context))); calculatings.append(" x ");
-                calculatings.append(String.valueOf(new BigDecimal(W[j][i][1], context)));
-                if (j!=5) calculatings.append(" + ");
-                else calculatings.append(" = ");
+                calculations.append(String.valueOf(new BigDecimal(W[0][j - 1][1], context))); calculations.append(" x ");
+                calculations.append(String.valueOf(new BigDecimal(W[j][i][1], context)));
+                if (j!=5) calculations.append(" + ");
+                else calculations.append(" = ");
                 if(j==1){
                     Text.append("\nW"+String.valueOf(i+1)+" = W2" + String.valueOf(i+1) + " x W3К"+String.valueOf(j)+String.valueOf(i+1));
                 }
@@ -76,7 +85,7 @@ public class Computing extends JFrame {
                     Text.append(" + W2" + String.valueOf(i + 1) + " x W3К" + String.valueOf(j) + String.valueOf(i + 1));
                 }
             }
-            Text.append(String.valueOf(calculatings)); Text.append(String.valueOf(new BigDecimal(result[i], context)));
+            Text.append(String.valueOf(calculations)); Text.append(String.valueOf(new BigDecimal(result[i], context)));
         }
 
 
