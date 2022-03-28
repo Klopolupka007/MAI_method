@@ -47,6 +47,7 @@ public class frame extends JFrame {
 
     //Функция для ручного заполнения таблицы и автоматического ввода значений в table_temp
     private void TextFilling(){
+        textChangedListener listen = new textChangedListener();
         //Создаем поля для ввода значений
         field = new JTextField[5][5]; Font font = new Font("Times new Roman", Font.BOLD ,30);
 
@@ -55,27 +56,44 @@ public class frame extends JFrame {
 
         //Настройка полей для ввода + автоматическое заполнение главной диагонали матрицы единицами
         for (int i = 0; i< 5; i++) {
-            for (int j=0; j<5; j++) {
+            for (int j = 0; j < 5; j++) {
                 field[i][j] = new JTextField();
-                field[i][j].setBounds(100*(j+1)+5, 100*(i+1)+5, 95,95);
+                field[i][j].setBounds(100 * (j + 1) + 5, 100 * (i + 1) + 5, 95, 95);
 
-                if (i==j) {field[i][j].setText("1");tables_temp[iter_but][i][j] = 1; }
+                if (i == j) {
+                    field[i][j].setText("1");
+                    tables_temp[iter_but][i][j] = 1;
+                }
 
                 field[i][j].setHorizontalAlignment(JTextField.CENTER);
                 field[i][j].setFont(font);
 
-                frame.add(field[i][j]); field[i][j].addKeyListener(listener);
+                frame.add(field[i][j]);
+                field[i][j].addKeyListener(listener);
             }
         }
-        double g[]; String str;
+
+
+        //Данный участок кода необходим для АВТОЗАПОЛНЕНИЯ при ПОВТОРНОМ открытии таблицы.
+        //Поля, обозначенные единицами или пустыми кнопками заполняются единицами ПОСЛЕ нажатия на кнопку Start.
+        //В listener для кнопки Start встроена функция заполнения пустых полей таблицы единицами.
+        StringBuilder str_for_field;
         for (int i = 0; i< 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (i!=j && tables_temp[iter_but][i][j]!=1){
-                    //g = tables_temp[iter_but][j][i];
-                    field[i][j].setText(String.valueOf(String.valueOf(tables_temp[iter_but][i][j]).charAt(0)));
+                    str_for_field = new StringBuilder();
+                    for (int h =0; h<String.valueOf(tables_temp[iter_but][i][j]).length();h++){
+                        if (String.valueOf(tables_temp[iter_but][i][j]).charAt(h)=='0'){
+                            field[i][j].setText(listen.fromStr(String.valueOf(tables_temp[iter_but][j][i]))); break;
+                        }
+                        else if (String.valueOf(tables_temp[iter_but][i][j]).charAt(h)=='.') { field[i][j].setText(String.valueOf(str_for_field)); break; }
+                        else str_for_field.append(String.valueOf(tables_temp[iter_but][i][j]).charAt(h));
+                    }
                 }
             }
         }
+
+
 
         //Для обозначения номеров полей сверху и слева создаем надписи по порядку с 1 по 5
         JLabel lab[][] = new JLabel[2][5];
@@ -95,7 +113,6 @@ public class frame extends JFrame {
         }
 
         //Блоки label для показателя расчетов
-
         for (int x=0; x<2; x++){
             for (int y =0; y<7; y++){
                 if (x==1 && y == 6) continue;
@@ -133,6 +150,14 @@ public class frame extends JFrame {
                     V_W_temp[iter_but][i][1] = V_W_temp[iter_but][i][0]/temp_num[0];
                     VW[1][1+i].setText(String.valueOf(new BigDecimal(V_W_temp[iter_but][i][1], context)));
                 }
+
+                for(int i=0; i<5; i++){
+                    for (int j =0; j<5; j++){
+                        if (field[i][j].getText().equals("")) field[i][j].setText("1");
+                    }
+                }
+
+
             }
         });
 
@@ -199,6 +224,11 @@ public class frame extends JFrame {
                     for(int j=i+1; j<num.length(); j++){
                         res_str = (new StringBuilder(temp).insert(temp.length() ,num.charAt(j)).toString());
                     } return res_str;
+                }
+                else if (num.charAt(i) == '.') {
+                    for (int j=0; j<i; j++)
+                        res_str = (new StringBuilder(temp).insert(temp.length() ,num.charAt(j)).toString());
+                    return "1/"+res_str;
                 }
             } temp = "1/";
             res_str = (new StringBuilder(temp).insert(temp.length() ,num).toString());
