@@ -35,6 +35,9 @@ public class Menu extends  JFrame{
         //таблица indx_V_W хранит расчетные данные
         double [][][] indx_V_W = new double[6][6][2];
 
+        //resArr - массив, хранящий итоговые значения после расчетов для сравнения альтернатив между собой
+        double [] resArr = new double[5];
+
         for (int i =0; i<6; i++){
             for (int j = 0; j<6;j++){
                 for (int k =0; k<2; k++){
@@ -69,41 +72,56 @@ public class Menu extends  JFrame{
                     frame table;
                     String temp_str_auto = "";
                     for (int j=0; j<9; j++) {
-                        if (button[j] == e.getSource() && j < 6) {
-                            table = new frame(tables, j, indx_V_W, criteria[j]);
-                            button[6].setBackground(new Color(240, 134, 80));
-                        }
-                        if (button[j] == e.getSource() && j == 6) {
-                            button[6].setBackground(Color.gray); String symbol = "";
-                            try (BufferedReader reader = new BufferedReader(new FileReader("src/com/company/autoFilling.txt"))) {
-                                for (int x =0; x<6; x++ ){
-                                    for (int y =0; y<6; y++){
-                                        symbol  = reader.readLine();
-                                        for (int z = 0, z1 =0; z<symbol.length(); z++){
-                                            if (symbol.charAt(z)==' ') continue;
-                                            else if(symbol.charAt(z) == '1') {
-                                                if (z+1!=symbol.length()) {
-                                                 if (symbol.charAt(z+1) == '/') {
-                                                     temp_str_auto = String.valueOf(symbol.charAt(z + 2));
-                                                     tables[x][y][z1] = 1 / Double.parseDouble(temp_str_auto);
-                                                     z += 2;
-                                                     z1++;
-                                                     continue;
-                                                 }
-                                                } else {tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z))); z1++; continue; }
-                                                tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z))); z1++;
-                                            }
-                                            else {
-                                                tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z))); z1++;
+                        if (button[j] == e.getSource()) {
+                            //Таблицы - ручное заполнение
+                            if (j < 6) {
+                                table = new frame(tables, j, indx_V_W, criteria[j]);
+                                button[6].setBackground(new Color(240, 134, 80));
+                            }
+                            //Функция автозаполнения
+                            else if (j == 6) {
+                                button[6].setBackground(Color.gray);
+                                String symbol = "";
+                                try (BufferedReader reader = new BufferedReader(new FileReader("src/com/company/autoFilling.txt"))) {
+                                    for (int x = 0; x < 6; x++) {
+                                        for (int y = 0; y < 6; y++) {
+                                            symbol = reader.readLine();
+                                            for (int z = 0, z1 = 0; z < symbol.length(); z++) {
+                                                if (symbol.charAt(z) == ' ') continue;
+                                                else if (symbol.charAt(z) == '1') {
+                                                    if (z + 1 != symbol.length()) {
+                                                        if (symbol.charAt(z + 1) == '/') {
+                                                            temp_str_auto = String.valueOf(symbol.charAt(z + 2));
+                                                            tables[x][y][z1] = 1 / Double.parseDouble(temp_str_auto);
+                                                            z += 2;
+                                                            z1++;
+                                                            continue;
+                                                        }
+                                                    } else {
+                                                        tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z)));
+                                                        z1++;
+                                                        continue;
+                                                    }
+                                                    tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z)));
+                                                    z1++;
+                                                } else {
+                                                    tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z)));
+                                                    z1++;
+                                                }
                                             }
                                         }
                                     }
+                                } catch (IOException ioException) {
+                                    System.out.println("error");
                                 }
                             }
-                            catch (IOException ioException) {
-                                System.out.println("error");
+                            //Окно с расчетами для отчета или истории вычислений
+                            else if (j == 7){
+
                             }
+                            //Окно с диаграммой
                         }
+
                     }
                 }
             });

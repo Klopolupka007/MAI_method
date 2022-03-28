@@ -127,6 +127,19 @@ public class frame extends JFrame {
             }
         } VW[0][0].setText("V(i)"); VW[1][0].setText("W(2i)");
 
+
+        //Добавляем label для СЗ, ИС и ОС
+        JLabel[] DownLabels = new JLabel[3];
+
+        for (int i =0; i<3; i++){
+            DownLabels[i] = new JLabel();
+            DownLabels[i].setBounds(10, 620+i*27, 300, 29);
+            DownLabels[i].setFont(new Font("Times new Roman", Font.BOLD, 20));
+            DownLabels[i].setForeground(new Color(250,250,250));
+            frame.add(DownLabels[i]);
+        } DownLabels[0]. setText("СЗ = N/A"); DownLabels[1].setText("ИС = N/A"); DownLabels[2].setText("ОС = N/A");
+
+
         //Кнопка для начала расчетов
         JButton Start = new JButton("Start");
         Start.setBounds(705, 605, 95, 95);
@@ -157,12 +170,32 @@ public class frame extends JFrame {
                     }
                 }
 
+                //Расчет СЗ и изменение соответствующего label
+                double SZ, res = 0;
+                for (int i =0; i<5; i++) {
+                    SZ = 0;
+                    for (int j =0; j<5; j++){
+                        SZ += tables_temp[iter_but][j][i];
+                    }
+                    res+=SZ*V_W_temp[iter_but][i][1];
+                }
+                DownLabels[0].setText("СЗ = " + String.valueOf(res));
 
+                //Расчет ИС и изменение соответствующего label
+                res = (res-5)/4;
+                DownLabels[1].setText("ИС = " + String.valueOf(res));
+
+                //Расчет ОС и изменение соответствующего label
+                res = res/1.12;
+                DownLabels[2].setText("ОС = " + String.valueOf(res));
             }
         });
 
 
         frame.add(Start);
+
+
+
     }
 
     //listener для обработки ввода чисел в поля ввода
