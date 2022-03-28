@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -64,8 +67,43 @@ public class Menu extends  JFrame{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     frame table;
+                    String temp_str_auto = "";
                     for (int j=0; j<9; j++) {
-                        if (button[j] == e.getSource() && j < 6) table = new frame(tables, j, indx_V_W, criteria[j]);
+                        if (button[j] == e.getSource() && j < 6) {
+                            table = new frame(tables, j, indx_V_W, criteria[j]);
+                            button[6].setBackground(new Color(240, 134, 80));
+                        }
+                        if (button[j] == e.getSource() && j == 6) {
+                            button[6].setBackground(Color.gray); String symbol = "";
+                            try (BufferedReader reader = new BufferedReader(new FileReader("src/com/company/autoFilling.txt"))) {
+                                for (int x =0; x<6; x++ ){
+                                    for (int y =0; y<6; y++){
+                                        symbol  = reader.readLine();
+                                        for (int z = 0, z1 =0; z<symbol.length(); z++){
+                                            if (symbol.charAt(z)==' ') continue;
+                                            else if(symbol.charAt(z) == '1') {
+                                                if (z+1!=symbol.length()) {
+                                                 if (symbol.charAt(z+1) == '/') {
+                                                     temp_str_auto = String.valueOf(symbol.charAt(z + 2));
+                                                     tables[x][y][z1] = 1 / Double.parseDouble(temp_str_auto);
+                                                     z += 2;
+                                                     z1++;
+                                                     continue;
+                                                 }
+                                                } else {tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z))); z1++; continue; }
+                                                tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z))); z1++;
+                                            }
+                                            else {
+                                                tables[x][y][z1] = Double.parseDouble(String.valueOf(symbol.charAt(z))); z1++;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch (IOException ioException) {
+                                System.out.println("error");
+                            }
+                        }
                     }
                 }
             });
