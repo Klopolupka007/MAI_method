@@ -70,7 +70,7 @@ public class Menu extends  JFrame{
             Main_frame.add(button[i]); button[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame table; Computing computing;
+                    frame table; Computing computing; diagram diagram;
                     String temp_str_auto = "";
                     for (int j=0; j<9; j++) {
                         if (button[j] == e.getSource()) {
@@ -112,6 +112,10 @@ public class Menu extends  JFrame{
                                             }
                                         }
                                     }
+                                    for (int x = 0; x < 5; x++){
+                                        resArr[x] = Double.parseDouble((reader.readLine()));
+                                    }
+
                                 } catch (IOException ioException) {
                                     System.out.println("error");
                                 }
@@ -121,6 +125,10 @@ public class Menu extends  JFrame{
                                 computing = new Computing(indx_V_W, resArr, tables);
                             }
                             //Окно с диаграммой
+                            else {
+                                diagram = new diagram(resArr);
+
+                            }
                         }
 
                     }

@@ -80,7 +80,7 @@ public class Computing extends JFrame {
                 for (int k =0; k <5; k++){
                     sum[j] += tables[i][k][j];
                     calculations.append(String.valueOf(new BigDecimal(tables[i][k][j], context)));
-                    if (k == 4) { calculations.append(" = "); calculations.append(String.valueOf(sum[j])); }
+                    if (k == 4) { calculations.append(" = "); calculations.append(String.valueOf(new BigDecimal(sum[j],context))); }
                     else calculations.append(" + ");
                 }
                 Text.append(String.valueOf(calculations));
@@ -93,7 +93,7 @@ public class Computing extends JFrame {
                 Arrays.fill(P, 0);
                 Text.append("\nP("); Text.append(String.valueOf(j+1)); Text.append("К"); Text.append(String.valueOf(i+1));
                 Text.append(") = S("); Text.append(String.valueOf(j+1)); Text.append(") x W(3К"); Text.append(String.valueOf(i+1));
-                Text.append(String.valueOf(j+1)); Text.append(") = "); Text.append(String.valueOf(sum[j])); Text.append(" x ");
+                Text.append(String.valueOf(j+1)); Text.append(") = "); Text.append(String.valueOf(new BigDecimal(sum[j],context))); Text.append(" x ");
                 Text.append(String.valueOf(new BigDecimal(W[i][j][1], context))); Text.append(" = ");
                 P[j] = sum[j]*W[i][j][1];
                 Text.append(String.valueOf(new BigDecimal(sum[j]*W[i][j][1], context)));
