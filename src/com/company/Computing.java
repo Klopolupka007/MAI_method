@@ -67,9 +67,57 @@ public class Computing extends JFrame {
             }
         } Text.append("\n");
 
+        //Расчеты СЗ
+
+        double [] sum = new double[5];
+        for (int i =0; i<6; i++){
+            Arrays.fill(sum,0);
+            //Для сумм каждого столбца
+            for (int j=0;j<5; j++){
+                calculations = new StringBuilder("");
+                Text.append("\nS("); Text.append(String.valueOf(j+1)); Text.append("К");
+                Text.append(String.valueOf(i+1)); Text.append(") = ");
+                for (int k =0; k <5; k++){
+                    sum[j] += tables[i][k][j];
+                    calculations.append(String.valueOf(new BigDecimal(tables[i][k][j], context)));
+                    if (k == 4) { calculations.append(" = "); calculations.append(String.valueOf(sum[j])); }
+                    else calculations.append(" + ");
+                }
+                Text.append(String.valueOf(calculations));
+            }
+
+            calculations = new StringBuilder("Лямбда(max K"); calculations.append(i+1);
+            //Для P = S x W
+            double P[] = new double[5]; double resP = 0;
+            for (int j=0; j<5; j++){
+                Arrays.fill(P, 0);
+                Text.append("\nP("); Text.append(String.valueOf(j+1)); Text.append("К"); Text.append(String.valueOf(i+1));
+                Text.append(") = S("); Text.append(String.valueOf(j+1)); Text.append(") x W(3К"); Text.append(String.valueOf(i+1));
+                Text.append(String.valueOf(j+1)); Text.append(") = "); Text.append(String.valueOf(sum[j])); Text.append(" x ");
+                Text.append(String.valueOf(new BigDecimal(W[i][j][1], context))); Text.append(" = ");
+                P[j] = sum[j]*W[i][j][1];
+                Text.append(String.valueOf(new BigDecimal(sum[j]*W[i][j][1], context)));
+                calculations.append(String.valueOf(new BigDecimal(sum[j]*W[i][j][1], context)));
+                if (j==4) {
+                    calculations.append(" = ");
+                    calculations.append(new BigDecimal(P[j], context));
+                }
+                else {
+
+                    calculations.append(new BigDecimal(sum[j]*W[i][j][1], context)); calculations.append(" + ");
+                }
+                resP += P[j];
+            }
+            Text.append("\nИС(К"); Text.append(String.valueOf(i+1)); Text.append(") = ("); Text.append(String.valueOf(new BigDecimal(resP, context)));
+            Text.append(" - 5)/(5-1) = "); Text.append(String.valueOf(new BigDecimal((resP-5)/4, context))); Text.append("\n");
+            Text.append("ОС(К"); Text.append(String.valueOf(i+1)); Text.append(") = ИС/СИ = ");
+            Text.append(String.valueOf(new BigDecimal((resP-5)/4, context))); Text.append("/1.12 = ");
+            Text.append(String.valueOf(new BigDecimal(((resP-5)/4)/1.12, context))); Text.append("\n");
+        }Text.append("\n");
+
+
+
         //Делаем главные расчеты и записываем их в TextArea
-
-
         for (int i =0; i<6; i++){
             calculations = new StringBuilder(" = ");
             for (int j=1; j<6; j++){
